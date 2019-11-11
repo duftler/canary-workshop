@@ -1,0 +1,9 @@
+
++----------------------------------------------------------------------+
+|                                                                      |
+| To reopen the tutorial in the right-hand pane at any time, enter:    |
+|                                                                      |
+| cloudshell launch-tutorial ~/canary-workshop/tutorial.md             |
+|                                                                      |
++----------------------------------------------------------------------+
+
