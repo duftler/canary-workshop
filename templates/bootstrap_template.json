@@ -1,0 +1,155 @@
+{
+ "application": "workshop",
+ "keepWaitingPipelines": false,
+ "limitConcurrent": true,
+ "name": "Bootstrap",
+ "stages": [
+  {
+   "account": "spinnaker-install-account",
+   "cloudProvider": "kubernetes",
+   "manifests": [
+    {
+     "apiVersion": "v1",
+     "kind": "Service",
+     "metadata": {
+      "labels": {
+       "app": "sample-app"
+      },
+      "name": "sample-app",
+      "namespace": "default"
+     },
+     "spec": {
+      "clusterIP": "None",
+      "ports": [
+       {
+        "name": "web",
+        "port": 8080,
+        "protocol": "TCP",
+        "targetPort": "web"
+       }
+      ],
+      "selector": {
+       "app": "sample-app"
+      },
+      "sessionAffinity": "None",
+      "type": "ClusterIP"
+     }
+    },
+    {
+     "apiVersion": "monitoring.coreos.com/v1",
+     "kind": "ServiceMonitor",
+     "metadata": {
+      "labels": {
+       "k8s-app": "sample-app"
+      },
+      "name": "sample-app",
+      "namespace": "default"
+     },
+     "spec": {
+      "endpoints": [
+       {
+        "interval": "30s",
+        "port": "web"
+       }
+      ],
+      "podTargetLabels": [
+       "canary"
+      ],
+      "selector": {
+       "matchLabels": {
+        "app": "sample-app"
+       }
+      }
+     }
+    }
+   ],
+   "moniker": {
+    "app": "workshop"
+   },
+   "name": "Create Service and ServiceMonitor",
+   "refId": "1",
+   "requisiteStageRefIds": [],
+   "skipExpressionEvaluation": false,
+   "source": "text",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  },
+  {
+   "account": "spinnaker-install-account",
+   "cloudProvider": "kubernetes",
+   "manifests": [
+    {
+     "apiVersion": "apps/v1",
+     "kind": "Deployment",
+     "metadata": {
+      "labels": {
+       "app": "sample-app",
+       "canary": "no"
+      },
+      "name": "sample-app",
+      "namespace": "default"
+     },
+     "spec": {
+      "replicas": 3,
+      "revisionHistoryLimit": 1,
+      "selector": {
+       "matchLabels": {
+        "app": "sample-app",
+        "canary": "no"
+       }
+      },
+      "template": {
+       "metadata": {
+        "labels": {
+         "app": "sample-app",
+         "canary": "no"
+        }
+       },
+       "spec": {
+        "containers": [
+         {
+          "image": "gcr.io/$PROJECT_ID/sample-app",
+          "imagePullPolicy": "Always",
+          "name": "sample-app",
+          "ports": [
+           {
+            "containerPort": 8080,
+            "name": "web",
+            "protocol": "TCP"
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "moniker": {
+    "app": "workshop"
+   },
+   "name": "Create Deployment",
+   "refId": "2",
+   "requisiteStageRefIds": [
+    "1"
+   ],
+   "skipExpressionEvaluation": false,
+   "source": "text",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  }
+ ],
+ "triggers": []
+}

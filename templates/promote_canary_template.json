@@ -1,0 +1,121 @@
+{
+ "application": "workshop",
+ "keepWaitingPipelines": false,
+ "limitConcurrent": true,
+ "name": "Promote Canary",
+ "stages": [
+  {
+   "application": "workshop",
+   "executionOptions": {
+    "successful": true
+   },
+   "expectedArtifacts": [
+    {
+     "defaultArtifact": {
+      "customKind": true,
+      "id": "8ae243f1-bc04-4941-92e6-daf1c02f49af"
+     },
+     "displayName": "image-to-promote",
+     "id": "0787d23c-5c9e-4ad7-9095-725255191d37",
+     "matchArtifact": {
+      "id": "264a3468-c44b-45b9-a5d6-dedc29c964f6",
+      "name": "gcr.io/$PROJECT_ID/sample-app",
+      "type": "docker/image"
+     },
+     "useDefaultArtifact": false,
+     "usePriorArtifact": false
+    }
+   ],
+   "name": "Find Artifacts From Execution",
+   "pipeline": $DEPLOY_CANARY_REF,
+   "refId": "1",
+   "requisiteStageRefIds": [],
+   "type": "findArtifactFromExecution"
+  },
+  {
+   "account": "spinnaker-install-account",
+   "cloudProvider": "kubernetes",
+   "manifests": [
+    {
+     "apiVersion": "apps/v1",
+     "kind": "Deployment",
+     "metadata": {
+      "labels": {
+       "app": "sample-app",
+       "canary": "no"
+      },
+      "name": "sample-app",
+      "namespace": "default"
+     },
+     "spec": {
+      "replicas": 3,
+      "revisionHistoryLimit": 1,
+      "selector": {
+       "matchLabels": {
+        "app": "sample-app",
+        "canary": "no"
+       }
+      },
+      "template": {
+       "metadata": {
+        "labels": {
+         "app": "sample-app",
+         "canary": "no"
+        }
+       },
+       "spec": {
+        "containers": [
+         {
+          "image": "gcr.io/$PROJECT_ID/sample-app",
+          "imagePullPolicy": "Always",
+          "name": "sample-app",
+          "ports": [
+           {
+            "containerPort": 8080,
+            "name": "web",
+            "protocol": "TCP"
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "moniker": {
+    "app": "workshop"
+   },
+   "name": "Deploy To Prod",
+   "refId": "2",
+   "requiredArtifactIds": [
+    "0787d23c-5c9e-4ad7-9095-725255191d37"
+   ],
+   "requiredArtifacts": [],
+   "requisiteStageRefIds": [
+    "1"
+   ],
+   "skipExpressionEvaluation": false,
+   "source": "text",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  }
+ ],
+ "triggers": [
+  {
+   "application": "workshop",
+   "enabled": true,
+   "pipeline": $DEPLOY_CANARY_REF,
+   "status": [
+    "successful"
+   ],
+   "type": "pipeline"
+  }
+ ]
+}

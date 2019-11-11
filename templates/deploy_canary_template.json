@@ -1,0 +1,196 @@
+{
+ "application": "workshop",
+ "expectedArtifacts": [
+  {
+   "defaultArtifact": {
+    "artifactAccount": "docker-registry",
+    "id": "41733a60-2265-4965-acdd-e7bb43c9300c",
+    "name": "gcr.io/$PROJECT_ID/sample-app",
+    "reference": "gcr.io/$PROJECT_ID/sample-app",
+    "type": "docker/image"
+   },
+   "displayName": "sample-app-image",
+   "id": "d341c973-d8fe-43f5-bc41-a36534cc974e",
+   "matchArtifact": {
+    "artifactAccount": "docker-registry",
+    "id": "96efed44-94e4-4c60-b244-96ea1a1c25ca",
+    "name": "gcr.io/$PROJECT_ID/sample-app",
+    "type": "docker/image"
+   },
+   "useDefaultArtifact": true,
+   "usePriorArtifact": true
+  }
+ ],
+ "keepWaitingPipelines": false,
+ "limitConcurrent": true,
+ "name": "Deploy Canary",
+ "stages": [
+  {
+   "account": "spinnaker-install-account",
+   "cloudProvider": "kubernetes",
+   "manifests": [
+    {
+     "apiVersion": "apps/v1",
+     "kind": "Deployment",
+     "metadata": {
+      "labels": {
+       "app": "sample-app",
+       "canary": "baseline"
+      },
+      "name": "sample-app-baseline",
+      "namespace": "default"
+     },
+     "spec": {
+      "replicas": 3,
+      "revisionHistoryLimit": 1,
+      "selector": {
+       "matchLabels": {
+        "app": "sample-app",
+        "canary": "baseline"
+       }
+      },
+      "template": {
+       "metadata": {
+        "labels": {
+         "app": "sample-app",
+         "canary": "baseline"
+        }
+       },
+       "spec": {
+        "containers": [
+         {
+          "image": "gcr.io/$PROJECT_ID/sample-app",
+          "imagePullPolicy": "Always",
+          "name": "sample-app",
+          "ports": [
+           {
+            "containerPort": 8080,
+            "name": "web",
+            "protocol": "TCP"
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "moniker": {
+    "app": "workshop"
+   },
+   "name": "Create Baseline Deployment",
+   "refId": "1",
+   "requiredArtifactIds": [
+    "d341c973-d8fe-43f5-bc41-a36534cc974e"
+   ],
+   "requiredArtifacts": [],
+   "requisiteStageRefIds": [],
+   "skipExpressionEvaluation": false,
+   "source": "text",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  },
+  {
+   "account": "spinnaker-install-account",
+   "cloudProvider": "kubernetes",
+   "expectedArtifacts": [],
+   "manifests": [
+    {
+     "apiVersion": "apps/v1",
+     "kind": "Deployment",
+     "metadata": {
+      "labels": {
+       "app": "sample-app",
+       "canary": "canary"
+      },
+      "name": "sample-app-canary",
+      "namespace": "default"
+     },
+     "spec": {
+      "replicas": 3,
+      "revisionHistoryLimit": 1,
+      "selector": {
+       "matchLabels": {
+        "app": "sample-app",
+        "canary": "canary"
+       }
+      },
+      "template": {
+       "metadata": {
+        "labels": {
+         "app": "sample-app",
+         "canary": "canary"
+        }
+       },
+       "spec": {
+        "containers": [
+         {
+          "image": "gcr.io/$PROJECT_ID/sample-app",
+          "imagePullPolicy": "Always",
+          "name": "sample-app",
+          "ports": [
+           {
+            "containerPort": 8080,
+            "name": "web",
+            "protocol": "TCP"
+           }
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "moniker": {
+    "app": "workshop"
+   },
+   "name": "Create Canary Deployment",
+   "refId": "2",
+   "requiredArtifactIds": [
+    "d341c973-d8fe-43f5-bc41-a36534cc974e"
+   ],
+   "requiredArtifacts": [],
+   "requisiteStageRefIds": [],
+   "skipExpressionEvaluation": false,
+   "source": "text",
+   "trafficManagement": {
+    "enabled": false,
+    "options": {
+     "enableTraffic": false,
+     "services": []
+    }
+   },
+   "type": "deployManifest"
+  },
+  {
+   "completeOtherBranchesThenFail": false,
+   "continuePipeline": false,
+   "failPipeline": true,
+   "judgmentInputs": [],
+   "name": "Manual Canary",
+   "notifications": [],
+   "refId": "3",
+   "requisiteStageRefIds": [
+    "1",
+    "2"
+   ],
+   "type": "manualJudgment"
+  }
+ ],
+ "triggers": [
+  {
+   "enabled": true,
+   "pubsubSystem": "google",
+   "subscriptionName": "gcr-pub-sub",
+   "type": "pubsub"
+  }
+ ]
+}

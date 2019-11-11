@@ -1,0 +1,55 @@
+{
+ "application": "workshop",
+ "expectedArtifacts": [],
+ "keepWaitingPipelines": false,
+ "limitConcurrent": true,
+ "name": "Clean Up Canary",
+ "stages": [
+  {
+   "account": "spinnaker-install-account",
+   "app": "workshop",
+   "cloudProvider": "kubernetes",
+   "cluster": "deployment sample-app-baseline",
+   "criteria": "newest",
+   "kind": "deployment",
+   "location": "default",
+   "mode": "dynamic",
+   "name": "Delete Baseline",
+   "options": {
+    "cascading": true
+   },
+   "refId": "4",
+   "requisiteStageRefIds": [],
+   "type": "deleteManifest"
+  },
+  {
+   "account": "spinnaker-install-account",
+   "app": "workshop",
+   "cloudProvider": "kubernetes",
+   "cluster": "deployment sample-app-canary",
+   "criteria": "newest",
+   "kind": "deployment",
+   "location": "default",
+   "mode": "dynamic",
+   "name": "Delete Canary",
+   "options": {
+    "cascading": true
+   },
+   "refId": "5",
+   "requisiteStageRefIds": [],
+   "type": "deleteManifest"
+  }
+ ],
+ "triggers": [
+  {
+   "application": "workshop",
+   "enabled": true,
+   "pipeline": $DEPLOY_CANARY_REF,
+   "status": [
+    "successful",
+    "failed"
+   ],
+   "type": "pipeline"
+  }
+ ]
+}
