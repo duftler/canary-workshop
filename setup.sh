@@ -7,6 +7,13 @@ if [ -z "$PROJECT_ID" ]; then
   exit 1
 fi
 
+set_dummy_git_config_values() {
+  git config --global user.name "$USER"
+  git config --global user.email "$USER@some-domain.com"
+}
+
+~/spinnaker-for-gcp/scripts/manage/check_git_config.sh || set_dummy_git_config_values
+
 ~/spinnaker-for-gcp/scripts/manage/check_cluster_config.sh
 
 ~/canary-workshop/prometheus/install_prometheus.sh
