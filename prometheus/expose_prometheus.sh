@@ -1,3 +1,12 @@
+if [ -z "$PROJECT_ID" ]; then
+  PROJECT_ID=$(gcloud info --format='value(config.project)')
+fi
+
+if [ -z "$PROJECT_ID" ]; then
+  echo "PROJECT_ID must be specified."
+  exit 1
+fi
+
 convert_service_to_nodetype() {
   EXISTING_SERVICE_TYPE=$(kubectl get service $1 -n monitoring \
     -o jsonpath={.spec.type})
@@ -21,8 +30,10 @@ PROMETHEUS_NODE_PORT=$(kubectl get svc -n monitoring prometheus-k8s \
 GRAFANA_NODE_PORT=$(kubectl get svc -n monitoring grafana \
   -o jsonpath={.spec.ports[0].nodePort})
 
-gcloud compute firewall-rules create prometheus-node-port --allow tcp:$PROMETHEUS_NODE_PORT
-gcloud compute firewall-rules create grafana-node-port --allow tcp:$GRAFANA_NODE_PORT
+gcloud compute firewall-rules create prometheus-node-port --allow tcp:$PROMETHEUS_NODE_PORT \
+  --project $PROJECT_ID
+gcloud compute firewall-rules create grafana-node-port --allow tcp:$GRAFANA_NODE_PORT \
+  --project $PROJECT_ID
 
 FIRST_NODE_EXTERNAL_IP=$(kubectl get nodes \
   -o jsonpath='{$.items[0].status.addresses[?(@.type=="ExternalIP")].address}')

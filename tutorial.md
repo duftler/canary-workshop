@@ -23,7 +23,7 @@ To connect to the Deck UI, click on the Preview button above and select "Preview
 
 ![Image](https://github.com/GoogleCloudPlatform/spinnaker-for-gcp/raw/master/scripts/manage/preview_button.png)
 
-## Prometheus / Grafana
+## Connect to Prometheus & Grafana
 
 Click on the Prometheus and Grafana links in Cloud Shell to bring each up in its own
 browser tab.
