@@ -82,10 +82,12 @@
    "name": "Create Baseline Deployment",
    "refId": "1",
    "requiredArtifactIds": [
-    "d341c973-d8fe-43f5-bc41-a36534cc974e"
+    "efdcbda0-9928-4c51-9454-919313736d5b"
    ],
    "requiredArtifacts": [],
-   "requisiteStageRefIds": [],
+   "requisiteStageRefIds": [
+    "4"
+   ],
    "skipExpressionEvaluation": false,
    "source": "text",
    "trafficManagement": {
@@ -183,6 +185,39 @@
     "2"
    ],
    "type": "manualJudgment"
+  },
+  {
+   "account": "spinnaker-install-account",
+   "app": "workshop",
+   "cloudProvider": "kubernetes",
+   "cluster": "deployment sample-app",
+   "criteria": "newest",
+   "expectedArtifacts": [
+    {
+     "defaultArtifact": {
+      "id": "5d8748cc-bf16-4b4a-bd9c-53da31780071",
+      "name": "gcr.io/$PROJECT_ID/sample-app",
+      "reference": "gcr.io/$PROJECT_ID/sample-app",
+      "type": "docker/image"
+     },
+     "displayName": "baseline-image",
+     "id": "efdcbda0-9928-4c51-9454-919313736d5b",
+     "matchArtifact": {
+      "id": "37a5fa14-79d9-49b0-a66d-e121dcfc8eba",
+      "name": "gcr.io/$PROJECT_ID/sample-app",
+      "type": "docker/image"
+     },
+     "useDefaultArtifact": true,
+     "usePriorArtifact": false
+    }
+   ],
+   "kind": "deployment",
+   "location": "default",
+   "mode": "dynamic",
+   "name": "Find Baseline Image",
+   "refId": "4",
+   "requisiteStageRefIds": [],
+   "type": "findArtifactsFromResource"
   }
  ],
  "triggers": [

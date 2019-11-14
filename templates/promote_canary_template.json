@@ -5,34 +5,6 @@
  "name": "Promote Canary",
  "stages": [
   {
-   "application": "workshop",
-   "executionOptions": {
-    "successful": true
-   },
-   "expectedArtifacts": [
-    {
-     "defaultArtifact": {
-      "customKind": true,
-      "id": "8ae243f1-bc04-4941-92e6-daf1c02f49af"
-     },
-     "displayName": "image-to-promote",
-     "id": "0787d23c-5c9e-4ad7-9095-725255191d37",
-     "matchArtifact": {
-      "id": "264a3468-c44b-45b9-a5d6-dedc29c964f6",
-      "name": "gcr.io/$PROJECT_ID/sample-app",
-      "type": "docker/image"
-     },
-     "useDefaultArtifact": false,
-     "usePriorArtifact": false
-    }
-   ],
-   "name": "Find Artifacts From Execution",
-   "pipeline": $DEPLOY_CANARY_REF,
-   "refId": "1",
-   "requisiteStageRefIds": [],
-   "type": "findArtifactFromExecution"
-  },
-  {
    "account": "spinnaker-install-account",
    "cloudProvider": "kubernetes",
    "manifests": [
@@ -89,11 +61,11 @@
    "name": "Deploy To Prod",
    "refId": "2",
    "requiredArtifactIds": [
-    "0787d23c-5c9e-4ad7-9095-725255191d37"
+    "db87e4fd-6c01-466d-a77b-3d0aa87b6005"
    ],
    "requiredArtifacts": [],
    "requisiteStageRefIds": [
-    "1"
+    "3"
    ],
    "skipExpressionEvaluation": false,
    "source": "text",
@@ -105,6 +77,40 @@
     }
    },
    "type": "deployManifest"
+  },
+  {
+   "account": "spinnaker-install-account",
+   "app": "workshop",
+   "cloudProvider": "kubernetes",
+   "cluster": "deployment sample-app-canary",
+   "criteria": "newest",
+   "expectedArtifacts": [
+    {
+     "defaultArtifact": {
+      "id": "d59b363c-d76f-498e-86c3-1a5e4fc280d4",
+      "name": "gcr.io/$PROJECT_ID/sample-app",
+      "reference": "gcr.io/$PROJECT_ID/sample-app",
+      "type": "docker/image"
+     },
+     "displayName": "image-to-promote",
+     "id": "db87e4fd-6c01-466d-a77b-3d0aa87b6005",
+     "matchArtifact": {
+      "id": "5a258a0b-9921-4978-9977-6daaa818b5c8",
+      "name": "gcr.io/$PROJECT_ID/sample-app",
+      "type": "docker/image"
+     },
+     "useDefaultArtifact": true,
+     "usePriorArtifact": false
+    }
+   ],
+   "kind": "deployment",
+   "location": "default",
+   "manifestName": "",
+   "mode": "dynamic",
+   "name": "Find Image to Promote",
+   "refId": "3",
+   "requisiteStageRefIds": [],
+   "type": "findArtifactsFromResource"
   }
  ],
  "triggers": [
