@@ -22,12 +22,17 @@ set_dummy_git_config_values() {
 
 ~/spinnaker-for-gcp/scripts/manage/connect_unsecured.sh
 
+export DIGEST=$(gcloud container images list-tags --project $PROJECT_ID \
+  gcr.io/$PROJECT_ID/sample-app --filter "tags:latest" --format json \
+  | jq -r .[0].digest)
+
 ~/canary-workshop/deploy_resources.sh
 
 ~/canary-workshop/kayenta/configure_prometheus_integration.sh
 
 gcloud source repos create sample-app --project $PROJECT_ID
 mkdir -p ~/$PROJECT_ID
+rm -rf ~/$PROJECT_ID/sample-app
 gcloud source repos clone sample-app ~/$PROJECT_ID/sample-app --project $PROJECT_ID
 
 cp -R ~/canary-workshop/sample-app/* ~/$PROJECT_ID/sample-app
