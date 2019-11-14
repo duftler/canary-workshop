@@ -223,6 +223,12 @@
  "triggers": [
   {
    "enabled": true,
+   "expectedArtifactIds": [
+     "d341c973-d8fe-43f5-bc41-a36534cc974e"
+   ],
+   "payloadConstraints": {
+     "action": "INSERT"
+   },
    "pubsubSystem": "google",
    "subscriptionName": "gcr-pub-sub",
    "type": "pubsub"
