@@ -22,6 +22,7 @@ envsubst < ~/canary-workshop/templates/bootstrap_template.json | ~/spin pipeline
 envsubst < ~/canary-workshop/templates/deploy_canary_template.json | ~/spin pipeline save
 
 export DEPLOY_CANARY_REF=$(~/spin pipeline get --name 'Deploy Canary' --application workshop | jq .id)
+export PROMOTE_CANARY_REF=$(~/spin pipeline get --name 'Promote Canary' --application workshop | jq .id)
 
 # Create pipeline 'Promote Canary' in application 'workshop'
 envsubst < ~/canary-workshop/templates/promote_canary_template.json | ~/spin pipeline save

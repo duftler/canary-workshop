@@ -46,8 +46,16 @@
    "enabled": true,
    "pipeline": $DEPLOY_CANARY_REF,
    "status": [
-    "successful",
     "failed"
+   ],
+   "type": "pipeline"
+  },
+  {
+   "application": "workshop",
+   "enabled": true,
+   "pipeline": $PROMOTE_CANARY_REF,
+   "status": [
+    "successful"
    ],
    "type": "pipeline"
   }
