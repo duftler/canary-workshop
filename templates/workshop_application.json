@@ -1,0 +1,15 @@
+{
+ "accounts": "spinnaker-install-account",
+ "cloudProviders": "kubernetes",
+ "dataSources": {
+  "disabled": [],
+  "enabled": [
+    "canaryConfigs"
+  ]
+ },
+ "email": "test@some-domain.com",
+ "instancePort": 80,
+ "name": "workshop",
+ "trafficGuards": [],
+ "user": "[anonymous]"
+}
