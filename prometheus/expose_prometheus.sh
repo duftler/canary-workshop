@@ -38,5 +38,16 @@ gcloud compute firewall-rules create grafana-node-port --allow tcp:$GRAFANA_NODE
 FIRST_NODE_EXTERNAL_IP=$(kubectl get nodes \
   -o jsonpath='{$.items[0].status.addresses[?(@.type=="ExternalIP")].address}')
 
+GRAFANA_ADDRESS=$FIRST_NODE_EXTERNAL_IP:$GRAFANA_NODE_PORT
+
+cd ~/canary-workshop/prometheus
+
+curl -d "@grafana-dashboard.json" \
+  -H "Content-Type: application/json" \
+  -X POST http://admin:admin@$GRAFANA_ADDRESS/api/dashboards/db
+
+echo
+echo
 echo "Access Prometheus here: http://$FIRST_NODE_EXTERNAL_IP:$PROMETHEUS_NODE_PORT"
-echo "Access Grafana here: http://$FIRST_NODE_EXTERNAL_IP:$GRAFANA_NODE_PORT"
+echo "Access Grafana here: http://$GRAFANA_ADDRESS"
+echo "Access newly-created Grafana dashboard here: http://$GRAFANA_ADDRESS/d/rbcn181Zz"
