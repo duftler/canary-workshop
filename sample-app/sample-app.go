@@ -20,6 +20,7 @@ var jobProcessingTimeStdDevFloat float64 = 1;
 var jobProcessingTimeMeanFloat float64 = 0;
 var networkLatencyStdDevFloat float64 = 1;
 var networkLatencyMeanFloat float64 = 0;
+
 func recordMetrics() {
     go func() {
         for {
