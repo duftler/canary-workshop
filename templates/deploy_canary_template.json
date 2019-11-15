@@ -177,7 +177,7 @@
    "continuePipeline": false,
    "failPipeline": true,
    "judgmentInputs": [],
-   "name": "Manual Canary",
+   "name": "Manually Validate Canary Results",
    "notifications": [],
    "refId": "3",
    "requisiteStageRefIds": [
