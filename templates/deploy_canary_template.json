@@ -41,7 +41,7 @@
       "namespace": "default"
      },
      "spec": {
-      "replicas": 3,
+      "replicas": 1,
       "revisionHistoryLimit": 1,
       "selector": {
        "matchLabels": {
@@ -116,7 +116,7 @@
       "namespace": "default"
      },
      "spec": {
-      "replicas": 3,
+      "replicas": 1,
       "revisionHistoryLimit": 1,
       "selector": {
        "matchLabels": {
